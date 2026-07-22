@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/Header"; 
+import BottomNav from "@/components/BottomNav";
+import FloatingWidget from '@/components/FloatingWidget';
+import ConditionalMarquee from "@/components/ConditionalMarquee";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,9 +30,19 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased bg-black`} 
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col items-center"> 
+        <div className="w-full max-w-[1200px] bg-transparent shadow-2xl">
+          <Header />
+          <BottomNav />
+          <FloatingWidget />
+          {/* Gunakan komponen yang sudah memiliki logika deteksi URL */}
+          <ConditionalMarquee />
+
+          <main>{children}</main>
+        </div>
+      </body>
     </html>
   );
 }
