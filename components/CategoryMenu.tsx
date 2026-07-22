@@ -15,7 +15,7 @@ export default function CategoryMenu() {
     { name: "CRASH", icon: "/icons/crash.png", id: "section-crash" },
   ];
 
-  const handleClick = (cat) => {
+  const handleClick = (cat: any) => {
     setActiveCategory(cat.name);
     
     // Fungsi untuk melakukan scroll otomatis ke section tujuan
