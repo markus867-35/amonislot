@@ -10,16 +10,16 @@ export default function Marquee() {
   }
 
   return (
-    <div className="w-full bg-[#5b32e6] py-2.5 px-4 overflow-hidden border-b border-purple-500 flex items-center shadow-inner">
+    // py-3 untuk ukuran di HP, md:py-5 untuk ukuran di Desktop/Komputer
+    <div className="w-full bg-[#5b32e6] py-0 md:py-5 px-4 overflow-hidden border-b border-purple-500 flex items-center shadow-inner">
       {/* Bagian Label "INFO:" dengan ikon yang ukurannya diperbesar */}
-      <div className="flex items-center gap-2 shrink-0 z-10 bg-[#800080 pr-4 font-bold text-white text-sm">
+      <div className="flex items-center gap-2 shrink-0 z-10 font-bold text-white text-sm">
         <span className="text-xl">📢</span>
-        
       </div>
 
       {/* Bagian teks pesan yang berjalan ke samping */}
       <div className="overflow-hidden w-full relative">
-        <div className="text-white text-sm font-medium whitespace-nowrap animate-marquee">
+        <div className="text-white text-sm md:text-base font-medium whitespace-nowrap animate-marquee">
           MATI SENSASI JP PAUS DI GAME MAHJONG WAYS 2 & GATES OF OLYMPUS 1000! 💰 PROSES DEPOSIT & WITHDRAWAL KILAT KURANG DARI 2 MENIT!
         </div>
       </div>

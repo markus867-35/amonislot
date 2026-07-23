@@ -18,10 +18,9 @@ export default function CategoryMenu() {
   const handleClick = (cat: any) => {
     setActiveCategory(cat.name);
     
-    // Fungsi untuk melakukan scroll otomatis ke section tujuan
     const element = document.getElementById(cat.id);
     if (element) {
-      const yOffset = -247; // Jarak aman agar tidak tertutup header & sticky menu
+      const yOffset = -247;
       const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
@@ -44,9 +43,11 @@ export default function CategoryMenu() {
         }
       `}</style>
 
-      <div className="sticky top-[80px] md:top-[150px] z-40 w-full bg-[#1a0033]/95 backdrop-blur-md py-3 px-3 border-b border-purple-800">
+      {/* Bagian utama dengan efek blur khusus mobile */}
+      <div className="sticky top-[80px] md:top-[150px] z-40 w-full bg-[#1a0033]/30 backdrop-blur-3xl md:bg-[#1a0033]/95 md:backdrop-blur-none py-1.5 md:py-4 px-2 md:px-3 border-b border-purple-800/30 md:border-purple-800 shadow-lg">
+        
         {/* Container Scroll Horizontal */}
-        <div className="max-w-[1200px] mx-auto flex overflow-x-auto md:overflow-visible gap-6 md:gap-0 scrollbar-hide items-center justify-start md:justify-between">
+        <div className="max-w-[1200px] mx-auto flex overflow-x-auto md:overflow-visible gap-2.5 md:gap-0 scrollbar-hide items-center justify-start md:justify-between">
           {categories.map((cat) => {
             const isActive = activeCategory === cat.name;
             
@@ -54,18 +55,25 @@ export default function CategoryMenu() {
               <button 
                 key={cat.name} 
                 onClick={() => handleClick(cat)}
-                className={`flex flex-col items-center justify-center min-w-[75px] h-[70px] md:min-w-[120px] rounded-2xl border transition-all shrink-0 ${
+                /* 
+                  min-w-[65px] h-[50px] -> Ukuran kecil khusus HP
+                  md:min-w-[120px] md:h-[70px] -> Ukuran normal untuk Desktop
+                */
+                className={`flex flex-col items-center justify-center min-w-[70px] h-[60px] md:min-w-[130px] md:h-[90px] rounded-xl md:rounded-2xl border transition-all shrink-0 ${
                   isActive ? "animate-wave-continuous border-yellow-400 bg-[#2d0059] shadow-[0_0_10px_rgba(234,179,8,0.5)]" : "border-purple-800/80 bg-[#1e0533] hover:border-purple-500"
                 }`}
               >
-                <div className="w-6 h-6 md:w-7 md:h-7 mb-1 flex items-center justify-center">
+                {/* Ukuran Ikon: w-4 h-4 di HP, md:w-7 md:h-7 di Desktop */}
+                <div className="w-4 h-4 md:w-7 md:h-7 mb-0.5 md:mb-1 flex items-center justify-center">
                   <img 
                     src={cat.icon} 
                     alt={cat.name} 
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <span className={`text-[10px] md:text-xs font-bold tracking-wider ${isActive ? "text-yellow-400" : "text-white"}`}>
+                
+                {/* Ukuran Teks: text-[9px] di HP, md:text-xs di Desktop */}
+                <span className={`text-[9px] md:text-xs font-bold tracking-wider ${isActive ? "text-yellow-400" : "text-white"}`}>
                   {cat.name}
                 </span>
               </button>
