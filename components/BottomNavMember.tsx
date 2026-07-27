@@ -4,14 +4,14 @@ import { usePathname, useRouter } from 'next/navigation';
 import { FaChevronUp } from 'react-icons/fa';
 import * as FaIcons from 'react-icons/fa';
 
-export default function BottomNav() {
+export default function BottomNavMember() {
   const pathname = usePathname();
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isLainnyaOpen, setIsLainnyaOpen] = useState(false);
   const menuRef = useRef(null);
 
+  // Daftar menu untuk popup "LAINNYA" versi member
   const subMenuList = [
     { name: 'RTP 99%', link: '#', icon: 'https://i.ibb.co/3s3gJ3G/chip.png' },
     { name: 'PREDIKSI TOGEL', link: '#', icon: 'https://i.ibb.co/3s3gJ3G/chip.png' },
@@ -24,19 +24,9 @@ export default function BottomNav() {
 
   useEffect(() => {
     setIsMounted(true);
-    
-    const token = 
-      localStorage.getItem('token') || 
-      localStorage.getItem('member_token') || 
-      localStorage.getItem('supabase.auth.token');
+  }, []);
 
-    if (token) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, [pathname]);
-
+  // Tutup popup jika mengklik di luar area nav
   useEffect(() => {
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -47,19 +37,17 @@ export default function BottomNav() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  if (!isMounted || isLoggedIn) {
-    return null;
-  }
+  if (!isMounted) return null;
 
   const navItems = [
     { 
-      name: "BERANDA", 
+      name: "PERMAINAN", 
       icon: (
-        <svg className="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-          <path d="M304 70.1C313.1 61.9 326.9 61.9 336 70.1L568 278.1C577.9 286.9 578.7 302.1 569.8 312C560.9 321.9 545.8 322.7 535.9 313.8L527.9 306.6L527.9 511.9C527.9 547.2 499.2 575.9 463.9 575.9L175.9 575.9C140.6 575.9 111.9 547.2 111.9 511.9L111.9 306.6L103.9 313.8C94 322.6 78.9 321.8 70 312C61.1 302.2 62 287 71.8 278.1L304 70.1zM320 120.2L160 263.7L160 512C160 520.8 167.2 528 176 528L224 528L224 424C224 384.2 256.2 352 296 352L344 352C383.8 352 416 384.2 416 424L416 528L464 528C472.8 528 480 520.8 480 512L480 263.7L320 120.3zM272 528L368 528L368 424C368 410.7 357.3 400 344 400L296 400C282.7 400 272 410.7 272 424L272 528z"/>
+        <svg className="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+          <path d="M112 0C49.9 0 0 49.9 0 112L0 400c0 62.1 49.9 112 112 112l288 0c62.1 0 112-49.9 112-112l0-288c0-62.1-49.9-112-112-112L112 0zM160 144a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm96 96a24 24 0 1 1 0 48 24 24 0 1 1 0-48zM184 344a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM328 144a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm32 152a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z"/>
         </svg>
       ), 
-      path: "/" 
+      path: "/dashboard" 
     },
     { 
       name: "PROMOSI", 
@@ -69,6 +57,15 @@ export default function BottomNav() {
         </svg>
       ), 
       path: "/promosi" 
+    },
+    { 
+      name: "PROFILE", 
+      icon: (
+        <svg className="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+          <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/>
+        </svg>
+      ), 
+      path: "/profile" 
     },
     { 
       name: "HUBUNGI", 
@@ -105,9 +102,11 @@ export default function BottomNav() {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden" ref={menuRef}>
+    <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pointer-events-none" ref={menuRef}>
+      
+      {/* POPUP MENU LAINNYA KE ATAS TANPA SCROLL BAR */}
       {isLainnyaOpen && (
-        <div className="absolute bottom-full left-4 right-4 mb-2 bg-[#1a0525] border border-yellow-600/50 rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="absolute bottom-full left-4 right-4 mb-3 max-w-xl mx-auto bg-[#1a0525] border border-yellow-600/50 rounded-xl shadow-2xl overflow-hidden pointer-events-auto animate-in fade-in slide-in-from-bottom-2 duration-200">
           <div className="divide-y divide-purple-900/40 p-2">
             {subMenuList.map((subItem, idx) => (
               <a
@@ -126,7 +125,8 @@ export default function BottomNav() {
         </div>
       )}
 
-      <div className="bg-[#120024]/40 backdrop-blur-sm border-t border-purple-800/30 shadow-[0_-4px_20px_rgba(0,0,0,0.5)] px-4 py-2.5 flex items-center justify-around">
+      {/* NAVBAR BAWAH MEMBER */}
+      <div className="pointer-events-auto w-full max-w-xl bg-[#120024]/90 backdrop-blur-md border-t border-purple-800/50 shadow-[0_-4px_20px_rgba(0,0,0,0.8)] px-4 py-3 flex items-center justify-around rounded-t-2xl">
         {navItems.map((item) => {
           const isActive = pathname === item.path;
 
@@ -135,14 +135,14 @@ export default function BottomNav() {
               <button
                 key={item.name}
                 onClick={() => setIsLainnyaOpen(!isLainnyaOpen)}
-                className={`flex flex-col items-center justify-center py-1 px-4 rounded-xl transition-all ${
+                className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all ${
                   isLainnyaOpen
                     ? "bg-yellow-400 text-black font-bold shadow-[0_0_12px_rgba(234,179,8,0.6)] scale-105"
                     : "text-white hover:text-yellow-400"
                 }`}
               >
                 <span className="mb-0.5 flex items-center justify-center">{item.icon}</span>
-                <span className="text-[10px] tracking-wider flex items-center gap-0.5">
+                <span className="text-[10px] tracking-wider font-semibold flex items-center gap-0.5">
                   {item.name} <FaChevronUp size={7} className={`transition-transform duration-300 ${isLainnyaOpen ? 'rotate-180' : ''}`} />
                 </span>
               </button>
@@ -156,14 +156,14 @@ export default function BottomNav() {
                 setIsLainnyaOpen(false);
                 router.push(item.path);
               }}
-              className={`flex flex-col items-center justify-center py-1 px-4 rounded-xl transition-all ${
+              className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all ${
                 isActive
                   ? "bg-yellow-400 text-black font-bold shadow-[0_0_12px_rgba(234,179,8,0.6)] scale-105"
                   : "text-white hover:text-yellow-400"
               }`}
             >
               <span className="mb-0.5 flex items-center justify-center">{item.icon}</span>
-              <span className="text-[10px] tracking-wider">{item.name}</span>
+              <span className="text-[10px] tracking-wider font-semibold">{item.name}</span>
             </button>
           );
         })}

@@ -9,17 +9,17 @@ export default function TermsPage() {
     "Untuk menjaga keamanan transaksi, setiap deposit melalui mesin EDC akan melalui proses verifikasi dan dapat ditahan sementara hingga 1x24 jam sebelum diproses sepenuhnya.",
     "Kami tidak memproses Deposit Jika Bank Tujuan Deposit mengalami GANGGUAN/ OFFLINE. Deposit Anda akan kami proseskan jika Dana yang anda kirim sudah tercetak di Mutasi kami.",
     "Sebelum anda mengirimkan dana, Wajib cek nomor rekening kami yang tersedia di menu deposit karena nomor rekening dapat berubah sewaktu-waktu tanpa pemberitahuan. Jika pengiriman dana tidak ke nomor rekening yang tertera di form deposit, maka kami anggap HANGUS.",
-    "Khusus Deposit, JALAWIN Tidak Membenarkan Atas Meminta Rekening Tujuan Deposit Melalui Medsos Ataupun Kontak Official Resmi Selain Yang Tertera Di Situs B.O Kami !",
+    "Khusus Deposit, AMONISLOT Tidak Membenarkan Atas Meminta Rekening Tujuan Deposit Melalui Medsos Ataupun Kontak Official Resmi Selain Yang Tertera Di Situs B.O Kami !",
     "Jika Melakukan Deposit Sangat Tidak Di Anjurkan Memasukkan Berita Deposit, Seperti Contoh : SLOT, DEPOSIT, ISI DOA Dan Lain-Lainnya. Jika Mengisi Berita Sebagai Berikut (Maka Saldo Di Anggap Donasi)"
   ];
 
   return (
-    <div className="min-h-screen bg-black flex justify-center items-center p-4">
+    <div className="min-h-screen bg-black flex justify-center items-center p-4 pb-20">
       <div className="bg-black/80 border border-yellow-600 rounded-xl p-6 max-w-2xl text-white shadow-2xl">
         {/* Header Logo */}
         <div className="text-center mb-6">
           <h2 className="text-xl font-bold mb-2">Syarat dan Ketentuan</h2>
-          <div className="text-4xl font-black text-yellow-500 italic">JalaWin</div>
+          <div className="text-4xl font-black text-yellow-500 italic">AMONISLOT</div>
         </div>
 
         {/* List Syarat */}

@@ -15,18 +15,21 @@ export default function CategoryMenu() {
     { name: "CRASH", icon: "/icons/crash.png", id: "section-crash" },
   ];
 
-  const handleClick = (cat: any) => {
+const handleClick = (cat: any) => {
     setActiveCategory(cat.name);
     
     const element = document.getElementById(cat.id);
     if (element) {
-      const yOffset = -247;
+      // Menyesuaikan offset secara otomatis: lebih kecil untuk mobile, dan -247 untuk desktop
+      const isMobile = window.innerWidth < 768;
+      const yOffset = isMobile ? -155 : -275; 
+      
       const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
 
-  return (
+return (
     <>
       <style jsx>{`
         @keyframes wave {
@@ -41,10 +44,44 @@ export default function CategoryMenu() {
           animation: wave 1.2s ease-in-out infinite;
           transform-origin: 70% 70%;
         }
+
+        /* Efek kilau cahaya berjalan diagonal */
+        @keyframes shineMove {
+          0% {
+            transform: translateX(-100%) translateY(-100%) rotate(25deg);
+          }
+          100% {
+            transform: translateX(100%) translateY(100%) rotate(25deg);
+          }
+        }
+
+        .glossy-button {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .glossy-button::after {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: linear-gradient(
+            135deg,
+            transparent 0%,
+            transparent 40%,
+            rgba(255, 255, 255, 0.35) 50%,
+            transparent 60%,
+            transparent 100%
+          );
+          pointer-events: none;
+          animation: shineMove 5s ease-in-out infinite;
+        }
       `}</style>
 
-      {/* Bagian utama dengan efek blur khusus mobile */}
-      <div className="sticky top-[80px] md:top-[150px] z-40 w-full bg-[#1a0033]/30 backdrop-blur-3xl md:bg-[#1a0033]/95 md:backdrop-blur-none py-1.5 md:py-4 px-2 md:px-3 border-b border-purple-800/30 md:border-purple-800 shadow-lg">
+      {/* Bagian utama dengan transparansi jelas dan blur tipis khusus mobile */}
+      <div className="sticky top-[80px] md:top-[150px] z-40 w-full bg-[#1a0033]/40 backdrop-blur-sm md:bg-[#1a0033]/95 md:backdrop-blur-none py-3 md:py-4 px-2 md:px-3 border-b border-purple-800/30 md:border-purple-800 shadow-lg">
         
         {/* Container Scroll Horizontal */}
         <div className="max-w-[1200px] mx-auto flex overflow-x-auto md:overflow-visible gap-2.5 md:gap-0 scrollbar-hide items-center justify-start md:justify-between">
@@ -55,16 +92,14 @@ export default function CategoryMenu() {
               <button 
                 key={cat.name} 
                 onClick={() => handleClick(cat)}
-                /* 
-                  min-w-[65px] h-[50px] -> Ukuran kecil khusus HP
-                  md:min-w-[120px] md:h-[70px] -> Ukuran normal untuk Desktop
-                */
-                className={`flex flex-col items-center justify-center min-w-[70px] h-[60px] md:min-w-[130px] md:h-[90px] rounded-xl md:rounded-2xl border transition-all shrink-0 ${
-                  isActive ? "animate-wave-continuous border-yellow-400 bg-[#2d0059] shadow-[0_0_10px_rgba(234,179,8,0.5)]" : "border-purple-800/80 bg-[#1e0533] hover:border-purple-500"
+                className={`glossy-button flex flex-col items-center justify-center min-w-[70px] h-[60px] md:min-w-[130px] md:h-[90px] rounded-xl md:rounded-2xl border transition-all shrink-0 ${
+                  isActive 
+                    ? "animate-wave-continuous border-yellow-400 bg-[#2d0059] shadow-[0_0_15px_rgba(234,179,8,0.7)]" 
+                    : "border-purple-800/80 bg-[#1e0533] hover:border-purple-500"
                 }`}
               >
-                {/* Ukuran Ikon: w-4 h-4 di HP, md:w-7 md:h-7 di Desktop */}
-                <div className="w-4 h-4 md:w-7 md:h-7 mb-0.5 md:mb-1 flex items-center justify-center">
+                {/* Ukuran Ikon */}
+                <div className="w-4 h-4 md:w-7 md:h-7 mb-0.5 md:mb-1 flex items-center justify-center relative z-10">
                   <img 
                     src={cat.icon} 
                     alt={cat.name} 
@@ -72,8 +107,8 @@ export default function CategoryMenu() {
                   />
                 </div>
                 
-                {/* Ukuran Teks: text-[9px] di HP, md:text-xs di Desktop */}
-                <span className={`text-[9px] md:text-xs font-bold tracking-wider ${isActive ? "text-yellow-400" : "text-white"}`}>
+                {/* Ukuran Teks */}
+                <span className={`text-[9px] md:text-xs font-bold tracking-wider relative z-10 ${isActive ? "text-yellow-400" : "text-white"}`}>
                   {cat.name}
                 </span>
               </button>
