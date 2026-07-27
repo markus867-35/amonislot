@@ -9,7 +9,7 @@ export default function BottomNavMember() {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [isLainnyaOpen, setIsLainnyaOpen] = useState(false);
-  const menuRef = useRef(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   // Daftar menu untuk popup "LAINNYA" versi member
   const subMenuList = [
@@ -26,10 +26,10 @@ export default function BottomNavMember() {
     setIsMounted(true);
   }, []);
 
-  // Tutup popup jika mengklik di luar area nav
+  // Tutup popup jika mengklik di luar area nav (Sudah ditambahkan tipe MouseEvent)
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsLainnyaOpen(false);
       }
     }
@@ -89,12 +89,12 @@ export default function BottomNavMember() {
     },
   ];
 
-  const renderSubIcon = (icon) => {
+  const renderSubIcon = (icon: string) => {
     if (!icon) return <div className="w-7 h-7 rounded-full bg-yellow-500/20 flex-shrink-0" />;
     if (icon.startsWith('http') || icon.startsWith('/')) {
       return <img src={icon} alt="icon" className="w-7 h-7 object-contain rounded-full flex-shrink-0" />;
     }
-    const IconComp = FaIcons[icon];
+    const IconComp = (FaIcons as Record<string, React.ComponentType<{ size?: number; className?: string }>>)[icon];
     if (IconComp) {
       return <IconComp size={16} className="text-yellow-400 flex-shrink-0" />;
     }
