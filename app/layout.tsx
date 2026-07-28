@@ -6,7 +6,7 @@ import ConditionalBottomNav from "@/components/ConditionalBottomNav";
 import FloatingWidget from '@/components/FloatingWidget';
 import ConditionalMarquee from "@/components/ConditionalMarquee";
 import LiveNotification from '@/components/LiveNotification';
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { usePathname } from "next/navigation";
 
 const geistSans = Geist({
@@ -19,9 +19,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export default function RootLayout({
-  children,
-}) {
+interface RootLayoutProps {
+  children: ReactNode;
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const pathname = usePathname(); 
   const isTermsPage = pathname === '/terms'; // Cek apakah sedang di halaman terms
