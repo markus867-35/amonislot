@@ -202,13 +202,13 @@ return (
   viewBox={cat.viewBox} 
   className={`w-full h-full ${isActive ? "text-black fill-current" : "text-white fill-current"}`}
 >
-  <g transform={('transform' in cat ? (cat as { transform?: string }).transform : undefined) || ""}>
-    {cat.svgPaths ? (
-      cat.svgPaths.map((pathData: string, index: number) => (
+  <g transform={(cat as any).transform || ""}>
+    {(cat as any).svgPaths ? (
+      (cat as any).svgPaths.map((pathData: string, index: number) => (
         <path key={index} d={pathData} />
       ))
     ) : (
-      cat.svgPath ? <path d={cat.svgPath} /> : null
+      (cat as any).svgPath ? <path d={(cat as any).svgPath} /> : null
     )}
   </g>
 </svg>
