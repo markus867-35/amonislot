@@ -198,20 +198,20 @@ return (
                 }`}
               >
                 <div className="w-6 h-7 md:w-10 md:h-15 mb-0.5 md:mb-1.5 flex items-center justify-center drop-shadow pointer-events-none">
-                  <svg 
-                    viewBox={cat.viewBox} 
-                    className={`w-full h-full ${isActive ? "text-black fill-current" : "text-white fill-current"}`}
-                  >
-                    <g transform={cat.transform || ""}>
-                      {cat.svgPaths ? (
-                        cat.svgPaths.map((pathData: string, index: number) => (
-                          <path key={index} d={pathData} />
-                        ))
-                      ) : (
-                        cat.svgPath ? <path d={cat.svgPath} /> : null
-                      )}
-                    </g>
-                  </svg>
+<svg 
+  viewBox={cat.viewBox} 
+  className={`w-full h-full ${isActive ? "text-black fill-current" : "text-white fill-current"}`}
+>
+  <g transform={('transform' in cat ? (cat as { transform?: string }).transform : undefined) || ""}>
+    {cat.svgPaths ? (
+      cat.svgPaths.map((pathData: string, index: number) => (
+        <path key={index} d={pathData} />
+      ))
+    ) : (
+      cat.svgPath ? <path d={cat.svgPath} /> : null
+    )}
+  </g>
+</svg>
                 </div>
                 <span className={`text-[9px] md:text-xs font-black tracking-wider drop-shadow pointer-events-none ${isActive ? "text-black" : "text-white"}`}>
                   {cat.name}
