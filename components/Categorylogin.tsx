@@ -1,11 +1,21 @@
 'use client';
-import { useState } from 'react';
+import React from 'react';
 
-export default function CategoryMenu() {
-  const [activeCategory, setActiveCategory] = useState("POPULER");
+interface CategoryMenuProps {
+  isLoggedIn?: boolean;
+  activeCategory?: string;
+  setActiveCategory?: (category: string) => void;
+}
 
-  const categories = [
-    { 
+export default function CategoryMenu({ 
+  isLoggedIn = false, 
+  activeCategory = "POPULER", 
+  setActiveCategory 
+}: CategoryMenuProps) {
+
+  // Base categories untuk semua user
+  const baseCategories = [
+        { 
       name: "POPULER", 
       id: "section-populer",
       svgPath: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
@@ -117,20 +127,34 @@ export default function CategoryMenu() {
   },
   ];
 
+  const memberCategories = isLoggedIn ? [
+    {
+      name: "VIP",
+      id: "section-vip",
+      svgPath: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+      viewBox: "0 0 24 24"
+    }
+  ] : [];
+
+  const categories = [...baseCategories, ...memberCategories];
+
   const handleClick = (cat: any) => {
-    setActiveCategory(cat.name);
-    
+    // Ubah state aktif secara global jika fungsi props tersedia
+    if (setActiveCategory) {
+      setActiveCategory(cat.name.toLowerCase());
+    }
+
+    // Scroll hanya jika elemen target ditemukan di halaman
     const element = document.getElementById(cat.id);
     if (element) {
       const isMobile = window.innerWidth < 768;
-      const yOffset = isMobile ? -155 : -275; 
-      
+      const yOffset = isMobile ? -100 : -150; 
       const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
 
-  return (
+return (
     <>
       <style jsx>{`
         .casino-button {
@@ -159,43 +183,42 @@ export default function CategoryMenu() {
         }
       `}</style>
 
-      <div className="sticky top-[80px] md:top-[150px] z-40 w-full bg-[#1b3b8f]/40  backdrop-blur-md py-2 md:py-3 px-2 md:px-4 border-y border-white/10 shadow-2xl">
-        <div className="max-w-[1200px] mx-auto flex overflow-x-auto md:overflow-visible gap-7 md:gap-3 scrollbar-hide items-center justify-start md:justify-between">
-{categories.map((cat) => {
-  const isActive = activeCategory === cat.name;
-  
-  
-  return (
-    <button 
-      key={cat.name} 
-      onClick={() => handleClick(cat)}
-      className={`casino-button animate-shine flex flex-col items-center justify-center min-w-[75px] h-[58px] md:min-w-[110px] md:h-[78px] rounded-xl md:rounded-2xl shrink-0 px-2 transition-all duration-300 ${
-        isActive ? "casino-button-active animate-wave-slow" : ""
-      }`}
-    >
-      <div className="w-5 h-5 md:w-7 md:h-7 mb-0.5 md:mb-1 flex items-center justify-center drop-shadow">
-        <svg 
-          viewBox={cat.viewBox} 
-          className={`w-full h-full ${isActive ? "text-black fill-current" : "text-white fill-current"}`}
-        >
-          <g transform={cat.transform || ""}>
-            {cat.svgPaths ? (
-              cat.svgPaths.map((pathData: string, index: number) => (
-                <path key={index} d={pathData} />
-              ))
-            ) : (
-              cat.svgPath ? <path d={cat.svgPath} /> : null
-            )}
-          </g>
-        </svg>
-      </div>
-      
-      <span className={`text-[9px] md:text-xs font-black tracking-wider drop-shadow ${isActive ? "text-black" : "text-white"}`}>
-        {cat.name}
-      </span>
-    </button>
-  );
-})}
+      {/* Sticky Container */}
+      <div className="sticky top-[70px] md:top-[151px] z-50 w-full bg-black/40 md:bg-transparent backdrop-blur-md md:backdrop-blur-md py-2 md:py-5 px-1 md:px-1 border-y border-white/10 shadow-2xl">
+        <div className="max-w-[1200px] mx-auto flex overflow-x-auto md:overflow-visible gap-8 md:gap-3 scrollbar-hide items-center justify-start md:justify-between">
+          {categories.map((cat) => {
+            const isActive = activeCategory?.toUpperCase() === cat.name;
+            return (
+              <button 
+                type="button"
+                key={cat.name} 
+                onClick={() => handleClick(cat)}
+                className={`animate-shine-button flex flex-col items-center justify-center min-w-[80px] h-[58px] md:min-w-[110px] md:h-[78px] rounded-xl md:rounded-2xl shrink-0 px-2 pointer-events-auto ${
+                  isActive ? "casino-button-active animate-wave-slow" : ""
+                }`}
+              >
+                <div className="w-6 h-7 md:w-10 md:h-15 mb-0.5 md:mb-1.5 flex items-center justify-center drop-shadow pointer-events-none">
+                  <svg 
+                    viewBox={cat.viewBox} 
+                    className={`w-full h-full ${isActive ? "text-black fill-current" : "text-white fill-current"}`}
+                  >
+                    <g transform={cat.transform || ""}>
+                      {cat.svgPaths ? (
+                        cat.svgPaths.map((pathData: string, index: number) => (
+                          <path key={index} d={pathData} />
+                        ))
+                      ) : (
+                        cat.svgPath ? <path d={cat.svgPath} /> : null
+                      )}
+                    </g>
+                  </svg>
+                </div>
+                <span className={`text-[9px] md:text-xs font-black tracking-wider drop-shadow pointer-events-none ${isActive ? "text-black" : "text-white"}`}>
+                  {cat.name}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </>

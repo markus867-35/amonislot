@@ -51,8 +51,9 @@ export default function TombolLainnya() {
   return (
     <div className="relative inline-block text-left w-full" ref={dropdownRef}>
       
-      {/* Tombol Utama */}
+      {/* Tombol Utama (TAMBAHKAN type="button" DI SINI) */}
       <button 
+        type="button" 
         onClick={() => setIsOpen(!isOpen)}
         className="glossy-button relative group overflow-hidden w-full flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-500 to-yellow-600 border border-yellow-400 text-black py-3 rounded text-xs font-bold uppercase transition-all duration-300 shadow-[0_0_15px_rgba(234,179,8,0.4)] cursor-pointer"
       >

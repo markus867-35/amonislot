@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { supabase } from '../app/lib/supabase';
-import { FaUser, FaKey, FaEye } from 'react-icons/fa';
+import { FaUser, FaKey, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function MobileLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,44 +34,16 @@ export default function MobileLogin() {
     }
   };
 
-return (
+  return (
     <div className="block md:hidden bg-[#0a020f] p-4 border-b border-purple-900">
-      <style jsx>{`
-        @keyframes shineMove {
-          0% {
-            transform: translateX(-100%) translateY(-100%) rotate(25deg);
-          }
-          100% {
-            transform: translateX(100%) translateY(100%) rotate(25deg);
-          }
-        }
-
-        .glossy-button {
-          position: relative;
-          overflow: hidden;
-        }
-
-        .glossy-button::after {
-          content: '';
-          position: absolute;
-          top: -50%;
-          left: -50%;
-          width: 200%;
-          height: 200%;
-          background: linear-gradient(
-            135deg,
-            transparent 0%,
-            transparent 48%,
-            rgba(255, 255, 255, 0.25) 50%,
-            transparent 52%,
-            transparent 100%
-          );
-          pointer-events: none;
-          animation: shineMove 4s ease-in-out infinite;
-        }
-      `}</style>
-
-      <div className="flex flex-col gap-3 max-w-xl mx-auto">
+      {/* Bungkus input dan tombol login ke dalam tag <form> */}
+      <form 
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLogin();
+        }} 
+        className="flex flex-col gap-3 max-w-xl mx-auto"
+      >
         {/* Input Username */}
         <div className="relative w-full">
           <FaUser className="absolute left-3 top-3.5 text-gray-400" />
@@ -100,18 +72,21 @@ return (
           </div>
         </div>
 
-        {/* Tombol Login dengan Efek Kilau */}
+        {/* Tombol Login (Ubah jadi type="submit") */}
         <button 
-          onClick={handleLogin} 
-          className="glossy-button w-full bg-[#d4af37] hover:bg-yellow-500 text-black font-extrabold py-3 rounded uppercase tracking-wider text-sm shadow-md relative"
+          type="submit" 
+          className="animate-shine w-full bg-[#d4af37] hover:bg-yellow-500 text-black font-extrabold py-3 rounded uppercase tracking-wider text-sm shadow-md"
         >
           <span className="relative z-10">Login</span>
         </button>
+      </form>
 
-        {/* Tombol Daftar dengan Efek Kilau */}
+      {/* Tombol Daftar berada di luar form utama agar tidak ikut ter-submit */}
+      <div className="flex flex-col gap-3 max-w-xl mx-auto mt-3">
         <button 
+          type="button"
           onClick={() => router.push('/register')} 
-          className="glossy-button w-full bg-[#1c0b2b] hover:bg-[#28103d] text-white border border-purple-500 font-bold py-3 rounded uppercase tracking-wider text-sm shadow-md relative"
+          className="animate-shine w-full bg-[#1c0b2b] hover:bg-[#28103d] text-white border border-purple-500 font-bold py-3 rounded uppercase tracking-wider text-sm shadow-md"
         >
           <span className="relative z-10">Daftar</span>
         </button>

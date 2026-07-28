@@ -106,22 +106,83 @@ body {
 }
 
 .animate-shine {
+  position: relative !important;
+  overflow: hidden !important;
+  isolation: isolate; /* Memastikan lapisan stack-nya benar */
+}
+
+.animate-shine::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 50% !important;
+  height: 100% !important;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.7),
+    transparent
+  ) !important;
+  animation: shine 3s infinite linear !important;
+  pointer-events: none !important;
+  z-index: 50 !important; /* Paksa posisi kilau berada di paling atas */
+}
+
+
+@keyframes waveContinuous {
+  0%, 100% {
+    transform: rotate(-5deg); /* Titik balik kiri */
+  }
+  50% {
+    transform: rotate(5deg);  /* Titik balik kanan */
+  }
+}
+
+.animate-wave-slow {
+  animation: waveContinuous 2.5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.btn-shine {
   position: relative;
   overflow: hidden;
 }
 
-.animate-shine::after {
+.btn-shine::after {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  width: 50%; /* Lebar garis kilau */
+  width: 50%;
   height: 100%;
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.5),
     transparent
   );
-  animation: shine 2.5s infinite;
+  transform: translateX(-100%);
+  animation: shine 2s infinite linear;
+  pointer-events: none;
 }
+
+@keyframes shimmerFull {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+

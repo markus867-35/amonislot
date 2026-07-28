@@ -6,7 +6,6 @@ import { supabase } from '../app/lib/supabase';
 function GameCard({ title, provider, image, gameUrl, onLoginRequired }) {
   const handlePlayClick = (e) => {
     e.preventDefault();
-    
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'; 
 
     if (!isLoggedIn) {
@@ -19,7 +18,7 @@ function GameCard({ title, provider, image, gameUrl, onLoginRequired }) {
   return (
     <div 
       onClick={handlePlayClick}
-      className="flex-shrink-0 w-36 sm:w-44 bg-[#111c38] border border-blue-500/40 rounded-2xl p-2.5 shadow-lg hover:border-yellow-400 transition-all duration-300 group cursor-pointer relative"
+      className="flex-shrink-0 w-36 sm:w-44 bg-[#111c38] border border-blue-500/40 rounded-3xl p-1 shadow-lg hover:border-blue-400 transition-all duration-300 group cursor-pointer relative"
     >
       <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-black/40 border border-blue-400/30">
         <img 
@@ -48,22 +47,22 @@ function GameCard({ title, provider, image, gameUrl, onLoginRequired }) {
 }
 
 export default function PopularSection() {
+  const [isMounted, setIsMounted] = useState(false);
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [selectedGameName, setSelectedGameName] = useState('');
 
   useEffect(() => {
+    setIsMounted(true);
     async function fetchGamesFromSupabase() {
       try {
-        // Diubah menjadi ascending: true agar berurutan normal (1, 2, 3...)
         const { data, error } = await supabase
           .from('popular_games')
           .select('*')
           .order('id', { ascending: true });
 
         if (error) throw error;
-
-        console.log("Data sukses ditarik langsung dari Supabase:", data);
         if (Array.isArray(data)) {
           setGames(data);
         }
@@ -78,6 +77,11 @@ export default function PopularSection() {
     fetchGamesFromSupabase();
   }, []);
 
+  // Mencegah perbedaan render server & client (Hydration Error)
+  if (!isMounted) {
+    return <div className="w-full my-6 min-h-[150px]" />;
+  }
+
   return (
     <>
       <section id="section-populer" className="bg-transparent sm:bg-[#0b0e1b]/90 border-none sm:border sm:border-blue-900/50 p-2 sm:p-5 rounded-2xl shadow-none sm:shadow-2xl backdrop-blur-none sm:backdrop-blur-md">
@@ -85,7 +89,7 @@ export default function PopularSection() {
           <span className="text-orange-500">🔥</span> PALING POPULER
         </h2>
 
-        <div className="flex overflow-x-auto gap-3 sm:gap-4 pb-2 scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-transparent">
+        <div className="bg-transparent flex overflow-x-auto gap-3 sm:gap-4 pb-2 scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-transparent">
           {loading ? (
             <div className="text-gray-400 text-xs py-4 px-2">Memuat data game...</div>
           ) : games.length === 0 ? (
@@ -98,42 +102,42 @@ export default function PopularSection() {
                 provider={game.provider} 
                 image={game.image} 
                 gameUrl={game.game_url} 
-                onLoginRequired={() => setShowModal(true)} 
+                onLoginRequired={() => {
+                  setSelectedGameName(game.title);
+                  setShowModal(true);
+                }} 
               />
             ))
           )}
         </div>
       </section>
 
-      {showModal && (
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fadeIn">
-          <div className="bg-[#1a0033] border border-purple-600/60 rounded-2xl p-6 max-w-sm w-full text-center shadow-[0_0_40px_rgba(168,85,247,0.5)]">
-            <div className="w-12 h-12 bg-yellow-400/20 text-yellow-400 rounded-full flex items-center justify-center mx-auto mb-3 text-xl border border-yellow-400/40">
-              🔒
-            </div>
 
-            <h3 className="text-white font-bold text-lg mb-1">Akses Dibatasi</h3>
-            <p className="text-gray-300 text-xs mb-6 leading-relaxed">
-              Silahkan login terlebih dahulu untuk mulai memainkan game seru ini!
-            </p>
 
-            <div className="flex gap-3">
-              <button 
-                onClick={() => setShowModal(false)}
-                className="flex-1 bg-transparent border border-purple-800 text-gray-300 hover:text-white hover:border-purple-600 font-semibold py-2.5 rounded-xl text-xs transition"
-              >
-                Tutup
-              </button>
-              <a 
-                href="/login" 
-                className="flex-1 bg-yellow-400 hover:bg-yellow-300 text-black font-bold py-2.5 rounded-xl text-xs transition shadow-[0_0_15px_rgba(234,179,8,0.4)] flex items-center justify-center"
-              >
-                Login Sekarang
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
+
+{showModal && (
+  <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
+    <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xs sm:max-w-sm w-full text-center shadow-2xl">
+      
+      {/* Teks Pesan */}
+      <p className="text-gray-700 font-medium text-sm sm:text-base leading-relaxed mb-6">
+        Login terlebih dahulu untuk bermain <br />
+        <span className="text-red-600 font-extrabold tracking-wide uppercase">
+          {selectedGameName || 'GAME'}
+        </span>
+      </p>
+
+      {/* Tombol Ok */}
+      <button 
+        onClick={() => setShowModal(false)}
+        className="w-full bg-[#eab308] hover:bg-[#ca8a04] text-black font-bold py-3 rounded-xl text-base shadow-md transition-all"
+      >
+        Ok
+      </button>
+
+    </div>
+  </div>
+)}
     </>
   );
 }

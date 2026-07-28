@@ -13,7 +13,7 @@ const menuItems = [
     id: 4, 
     text: 'WHATSAPP', 
     icon: 'https://img-mgscorp.kangpermen13.workers.dev/whatsapp-converter.webp', 
-    color: 'bg-green-600',
+    
     link: 'https://wa.me/nomorwhatsappanda', // <-- Masukkan URL WhatsApp di sini
     showMobile: true 
   },
@@ -29,7 +29,7 @@ const menuItems = [
     id: 2, 
     text: 'TELEGRAM', 
     icon: 'https://img-mgscorp.kangpermen13.workers.dev/telegram-converter.webp', 
-    color: 'bg-sky-500',
+    
     link: 'https://t.me/namagruptelegram', // <-- Masukkan URL Telegram di sini
     showMobile: false 
   },

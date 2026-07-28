@@ -139,6 +139,12 @@ export default function RegisterPage() {
     const result = await response.json();
 
     if (response.ok) {
+      // 1. SIMPAN STATUS LOGIN KE LOCALSTORAGE SETELAH BERHASIL DAFTAR
+      localStorage.setItem('isLoggedIn', 'true');
+      if (result.token) {
+        localStorage.setItem('token', result.token); // Jika API Anda mengembalikan token
+      }
+
       Swal.fire({
         title: 'Berhasil!',
         text: 'Pendaftaran berhasil! Mengarahkan ke Syarat dan Ketentuan...',

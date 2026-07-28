@@ -1,14 +1,28 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import CategoryMenu from "@/components/CategoryMenu";
+import Categorylogin from "@/components/Categorylogin";
+import TotoSection from "@/components/TotoSection";
+import SlotGamesSection from "@/components/SlotGamesSection";
+import LiveGamesSection from "@/components/LiveGamesSection";
+import Suportsection from "@/components/Suportsection";
+import Virtualsection from "@/components/Virtualsection";
+import Fishingsection from "@/components/Fishingsection";
+import Crashsection from "@/components/Crashsection";
+import PopularSection from "@/components/PopularSection";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
+  
+  // PERBAIKAN DI SINI: Ubah default state dari 'popular' menjadi 'populer'
+  const [activeCategory, setActiveCategory] = useState('populer');
+  const [currentNav, setCurrentNav] = useState("PERMAINAN");
+
+  const [username, setUsername] = useState('USER_400');
+  const [showBalance, setShowBalance] = useState(false);
 
   useEffect(() => {
-    // 1. Cek apakah user benar-benar sudah login berdasarkan token / status login
     const isLoggedIn = 
       localStorage.getItem('isLoggedIn') || 
       localStorage.getItem('token') || 
@@ -16,50 +30,88 @@ export default function DashboardPage() {
       localStorage.getItem('supabase.auth.token');
 
     if (!isLoggedIn) {
-      // Jika belum login, tendang balik ke beranda ("/")
       router.push('/');
     } else {
-      // Jika sudah login, izinkan render halaman dashboard
       setIsAuthorized(true);
+      const storedUsername = localStorage.getItem('username');
+      if (storedUsername) {
+        setUsername(storedUsername);
+      }
     }
   }, [router]);
 
-  // Selama pengecekan atau jika belum ter-authorize, jangan tampilkan apa-apa untuk mencegah kedipan konten
   if (!isAuthorized) {
     return null;
   }
 
   return (
-    <main className="min-h-screen bg-[#0a020f] text-white p-4">
+    <main className="min-h-screen bg-[#0a020f] text-white p-2">
       
-      <CategoryMenu />
+      <Categorylogin activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
 
-      {/* 2. AREA SALDO & RIWAYAT (Dua Kolom) */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* SALDO & RIWAYAT: Sekarang akan muncul otomatis saat pertama buka atau saat 'populer' diklik */}
+      {activeCategory === 'populer' && (
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          
+          {/* Kiri: Saldo */}
+          <div className="bg-[#1a0525] p-6 md:p-10 rounded-xl border border-purple-900 shadow-lg">
+            <p className="text-xs text-gray-400 mb-1 tracking-wider">
+              SELAMAT DATANG, <span className="text-yellow-400 font-bold">{username.toUpperCase()}</span>
+            </p>
+            <div className="flex items-center gap-3 mb-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-yellow-500">
+                {showBalance ? "Rp. 1.500.000" : "Rp. ******"}
+              </h2>
+              <button 
+                onClick={() => setShowBalance(!showBalance)} 
+                className="text-gray-400 hover:text-white transition-colors focus:outline-none"
+                title={showBalance ? "Sembunyikan Saldo" : "Lihat Saldo"}
+              >
+                {showBalance ? "🙈" : "👁️"}
+              </button>
+            </div>
+            <div className="flex gap-4">
+              <button className="flex-1 bg-yellow-500 hover:bg-yellow-400 text-black py-2.5 rounded-lg font-bold transition-all shadow-md">
+                DEPOSIT
+              </button>
+              <button className="flex-1 bg-red-600 hover:bg-red-500 text-white py-2.5 rounded-lg font-bold transition-all shadow-md">
+                WITHDRAW
+              </button>
+            </div>
+          </div>
+
+          {/* Kanan: Riwayat */}
+          <div className="bg-[#1a0525] p-6 rounded-xl border border-purple-900 flex flex-col items-center justify-center text-center shadow-lg">
+            <div className="text-gray-500 mb-2 text-4xl">📄</div>
+            <h3 className="font-bold text-gray-300 tracking-wide">RIWAYAT PERMAINAN</h3>
+            <p className="text-xs text-gray-500 mt-1">Belum ada aktivitas terbaru.</p>
+          </div>
+
+        </section>
+      )}
+
+      {/* AREA KONTEN DINAMIS BERDASARKAN MENU YANG DIKLIK */}
+      <div className="p-2 md:p-6 space-y-4 md:space-y-8">
         
-        {/* Kiri: Saldo */}
-        <div className="bg-[#1a0525] p-6 rounded-xl border border-purple-900">
-          <p className="text-xs text-gray-400 mb-1">
-            SELAMAT DATANG, {localStorage.getItem('username')?.toUpperCase() || 'USER_400'}
-          </p>
-          <div className="flex items-center gap-2 mb-6">
-            <h2 className="text-3xl font-bold text-yellow-500">Rp. ******</h2>
-            <button className="text-gray-400">👁️</button>
-          </div>
-          <div className="flex gap-4">
-            <button className="flex-1 bg-yellow-500 text-black py-2 rounded font-bold">DEPOSIT</button>
-            <button className="flex-1 bg-red-600 text-white py-2 rounded font-bold">WITHDRAW</button>
-          </div>
-        </div>
+        {activeCategory === 'populer' && (
+          <>
+            <PopularSection />
+            <TotoSection />
+          </>
+        )}
 
-        {/* Kanan: Riwayat */}
-        <div className="bg-[#1a0525] p-6 rounded-xl border border-purple-900 flex flex-col items-center justify-center text-center">
-          <div className="text-gray-500 mb-2 text-4xl">📄</div>
-          <h3 className="font-bold text-gray-300">RIWAYAT PERMAINAN</h3>
-          <p className="text-xs text-gray-500">Belum ada aktivitas terbaru.</p>
-        </div>
+        {activeCategory === 'slot' && <SlotGamesSection />}
 
-      </section>
+        {activeCategory === 'live' && <LiveGamesSection />}
+
+        {activeCategory === 'toto' && <TotoSection />}
+
+        {activeCategory === 'virtual' && <Virtualsection />}
+        {activeCategory === 'fishing' && <Fishingsection />}
+        {activeCategory === 'crash' && <Crashsection />}
+        {activeCategory === 'sport' && <Suportsection />}
+
+      </div>
     </main>
   );
-}
+} 

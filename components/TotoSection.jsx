@@ -3,11 +3,13 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../app/lib/supabase';
 
 export default function TotoSection() {
+  const [isMounted, setIsMounted] = useState(false);
   const [totoList, setTotoList] = useState([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setIsMounted(true);
     async function fetchToto() {
       try {
         const { data, error } = await supabase
@@ -27,12 +29,17 @@ export default function TotoSection() {
     fetchToto();
   }, []);
 
+  // Mencegah error hydration saat render awal di server
+  if (!isMounted) {
+    return <div className="w-full my-6 min-h-[150px]" />;
+  }
+
   const filteredToto = totoList.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <section id="section-toto" className="w-full my-6 px-2 sm:px-0">
+    <section id="section-toto" className="w-full my-6 px-2 sm:px-0 bg-transparent md:bg-[#0b0e1b] text-black md:text-white">
       {/* Header & Search Bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <h2 className="text-white font-bold text-base sm:text-lg flex items-center gap-2 tracking-wide">
@@ -48,7 +55,7 @@ export default function TotoSection() {
             placeholder="Cari Pasaran..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full  border border-purple-900/60 rounded-xl pl-10 pr-4 py-2 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors shadow-inner"
+            className="w-full bg-black border border-purple-900/60 rounded-xl pl-10 pr-4 py-2 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors shadow-inner"
           />
         </div>
       </div>
@@ -63,7 +70,7 @@ export default function TotoSection() {
           {filteredToto.map((toto) => (
             <div
               key={toto.id}
-              className="border border-purple-900/40 rounded-2xl p-4 shadow-xl hover:border-yellow-400 hover:shadow-[0_0_20px_rgba(234,179,8,0.5)] hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden group flex flex-col items-center text-center"
+              className="border bg-black border-purple-900/40 rounded-2xl p-4 shadow-xl hover:border-blue-400  hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden group flex flex-col items-center text-center"
             >
               {/* Background Gambar dengan Efek Zoom Halus saat di-hover */}
               <div

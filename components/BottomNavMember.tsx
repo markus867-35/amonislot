@@ -39,21 +39,29 @@ export default function BottomNavMember() {
 
   if (!isMounted) return null;
 
-  const navItems = [
+const navItems = [
     { 
       name: "PERMAINAN", 
       icon: (
-        <svg className="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-          <path d="M112 0C49.9 0 0 49.9 0 112L0 400c0 62.1 49.9 112 112 112l288 0c62.1 0 112-49.9 112-112l0-288c0-62.1-49.9-112-112-112L112 0zM160 144a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm96 96a24 24 0 1 1 0 48 24 24 0 1 1 0-48zM184 344a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM328 144a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm32 152a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-dices w-10 h-7">
+          <rect width="12" height="12" x="2" y="10" rx="2" ry="2"></rect>
+          <path d="m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6"></path>
+          <path d="M6 18h.01"></path>
+          <path d="M10 14h.01"></path>
+          <path d="M15 6h.01"></path>
+          <path d="M18 9h.01"></path>
         </svg>
       ), 
       path: "/dashboard" 
     },
     { 
-      name: "PROMOSI", 
+     name: "PROMOSI", 
       icon: (
-        <svg className="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-          <path d="M190.2 32.1C182.3 22.8 170.8 17.5 158.7 17.5C132.8 17.5 112 38.3 112 64C112 84.1 125 101.2 143.2 107.1L96 160L32 160C14.3 160 0 174.3 0 192L0 224C0 232.8 7.2 240 16 240L496 240C504.8 240 512 232.8 512 224L512 192C512 174.3 497.7 160 480 160L416 160L368.8 107.1C387 101.2 400 84.1 400 64C400 38.3 379.2 17.5 353.3 17.5C341.2 17.5 329.7 22.8 321.8 32.1L256 109.1L190.2 32.1zM48 288L48 464C48 490.5 69.5 512 96 512L416 512C442.5 512 464 490.5 464 464L464 288L288 288L288 416L224 416L224 288L48 288z"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-gift w-10 h-7">
+          <rect x="3" y="8" width="18" height="4" rx="1"></rect>
+          <path d="M12 8v13"></path>
+          <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path>
+          <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
         </svg>
       ), 
       path: "/promosi" 
@@ -61,17 +69,20 @@ export default function BottomNavMember() {
     { 
       name: "PROFILE", 
       icon: (
-        <svg className="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-          <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-user w-10 h-7">
+          <circle cx="12" cy="12" r="10"></circle>
+          <circle cx="12" cy="10" r="3"></circle>
+          <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"></path>
         </svg>
       ), 
-      path: "/profile" 
+      path: "/dashboard/profile" 
     },
     { 
       name: "HUBUNGI", 
       icon: (
-        <svg className="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-          <path d="M256 32C132.3 32 32 132.3 32 256l0 96c0 35.3 28.7 64 64 64l32 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32l-32 0 0-32c0-106 86-192 192-192s192 86 192 192l0 32-32 0c-17.7 0-32 14.3-32 32l0 128c0 17.7 14.3 32 32 32l32 0c35.3 0 64-28.7 64-64l0-96C480 132.3 379.7 32 256 32zM96 352l0 32-32 0c-17.7 0-32-14.3-32-32l0-32 64 0zm384 32l0-32 64 0 0 32c0 17.7-14.3 32-32 32l-32 0 0-32z"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-headset w-10 h-7">
+          <path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z"></path>
+          <path d="M21 16v2a4 4 0 0 1-4 4h-5"></path>
         </svg>
       ), 
       path: "/hubungi" 
@@ -79,7 +90,7 @@ export default function BottomNavMember() {
     { 
       name: "LAINNYA", 
       icon: (
-        <svg className="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24 w-10 h-7">
           <circle cx="5" cy="12" r="2" />
           <circle cx="12" cy="12" r="2" />
           <circle cx="19" cy="12" r="2" />
@@ -126,7 +137,7 @@ export default function BottomNavMember() {
       )}
 
       {/* NAVBAR BAWAH MEMBER */}
-      <div className="pointer-events-auto w-full max-w-xl bg-[#120024]/90 backdrop-blur-md border-t border-purple-800/50 shadow-[0_-4px_20px_rgba(0,0,0,0.8)] px-4 py-3 flex items-center justify-around rounded-t-2xl">
+      <div className="pointer-events-auto w-full max-w-xl bg-transparent backdrop-blur-md border-t border-purple-800/50 shadow-[0_-4px_20px_rgba(0,0,0,0.8)] px-1 py-5 flex items-center justify-around rounded-t-2xl">
         {navItems.map((item) => {
           const isActive = pathname === item.path;
 
@@ -170,4 +181,4 @@ export default function BottomNavMember() {
       </div>
     </div>
   );
-}
+} 

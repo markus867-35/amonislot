@@ -76,47 +76,12 @@ export default function Header() {
       window.dispatchEvent(new Event('loginStateChanged'));
 
       Swal.fire('Berhasil!', 'Selamat datang kembali!', 'success');
-      router.push('/dashboard');
+      router.push('/terms');
     }
   };
 
   return (
     <header className="bg-[#0a020f] py-4 border-b border-purple-900 sticky top-0 z-45">
-      <style jsx>{`
-        @keyframes shineMove {
-          0% {
-            transform: translateX(-100%) translateY(-100%) rotate(25deg);
-          }
-          100% {
-            transform: translateX(100%) translateY(100%) rotate(25deg);
-          }
-        }
-
-        .glossy-button {
-          position: relative;
-          overflow: hidden;
-        }
-
-        .glossy-button::after {
-          content: '';
-          position: absolute;
-          top: -50%;
-          left: -50%;
-          width: 200%;
-          height: 200%;
-          background: linear-gradient(
-            135deg,
-            transparent 0%,
-            transparent 48%,
-            rgba(255, 255, 255, 0.25) 50%,
-            transparent 52%,
-            transparent 100%
-          );
-          pointer-events: none;
-          animation: shineMove 5s ease-in-out infinite;
-        }
-      `}</style>
-
       <div className="max-w-[1200px] mx-auto px-4 flex justify-between items-center relative">
         
         {/* 1. PENYEIMBANG KIRI: Hanya muncul di desktop saat sudah login agar logo persis di tengah */}
@@ -131,30 +96,20 @@ export default function Header() {
            />
         </div>
 
-        {/* KONDISI: Jika sudah login, tampilkan sambutan & logout (Hanya di Desktop, ditarik ke kanan) */}
+        {/* KONDISI: Jika sudah login, tampilkan tombol logout (Hanya di Desktop, ditarik ke kanan) */}
         {isLoggedIn ? (
           <div className="hidden md:flex flex-1 justify-end items-center gap-6">
-            <span className="text-white font-medium text-base">
-              Halo, <strong className="text-yellow-500">{localStorage.getItem('username') || 'Member'}</strong>
-            </span>
-            <button 
-              onClick={() => { 
-                localStorage.removeItem('isLoggedIn'); 
-                localStorage.removeItem('username'); 
-                localStorage.removeItem('token');
-                localStorage.removeItem('member_token');
-                setIsLoggedIn(false); 
-                window.dispatchEvent(new Event('loginStateChanged'));
-                router.push('/'); 
-              }} 
-              className="glossy-button bg-red-700 hover:bg-red-800 text-white px-5 py-1.5 rounded text-sm font-bold border border-white uppercase tracking-wider transition-colors relative"
-            >
-              <span className="relative z-10">Logout</span>
-            </button>
+
           </div>
         ) : (
-          /* KONDISI: Jika BELUM login, tampilkan form input login (Hanya di Desktop) */
-          <div className="hidden md:flex flex-col gap-1 flex-1 max-w-xl ml-auto">
+          /* KONDISI: Form dibungkus dari paling luar area input login */
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault(); 
+              handleLogin();      
+            }} 
+            className="hidden md:flex flex-col gap-1 flex-1 max-w-xl ml-auto"
+          >
             <div className="flex gap-3">
               <div className="relative flex-1">
                 <FaUser className="absolute left-3 top-3 text-gray-400" />
@@ -180,9 +135,11 @@ export default function Header() {
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </div>
               </div>
+
+              {/* Tombol Login (Submit) */}
               <button 
-                onClick={handleLogin} 
-                className="glossy-button bg-yellow-600 hover:bg-yellow-500 text-black font-bold px-6 rounded uppercase relative"
+                type="submit" 
+                className="animate-shine bg-yellow-600 hover:bg-yellow-500 text-black font-bold px-6 py-2 rounded uppercase"
               >
                 <span className="relative z-10">Login</span>
               </button>
@@ -190,30 +147,34 @@ export default function Header() {
             
             <div className="flex gap-3 mt-3">
               <button 
+                type="button"
                 onClick={() => router.push('/promosi')} 
-                className="glossy-button flex-1 flex items-center justify-center gap-2 bg-transparent border border-yellow-600 text-white py-3 rounded text-xs font-bold uppercase relative"
+                className="animate-shine flex-1 flex items-center justify-center gap-2 bg-transparent border border-yellow-600 text-white py-3 rounded text-xs font-bold uppercase"
               >
                 <span className="relative z-10 flex items-center gap-2"><FaGift /> Promosi</span>
               </button>
               <button 
+                type="button"
                 onClick={() => router.push('/hubungi')} 
-                className="glossy-button flex-1 flex items-center justify-center gap-2 bg-transparent border border-yellow-600 text-white py-3 rounded text-xs font-bold uppercase relative"
+                className="animate-shine flex-1 flex items-center justify-center gap-2 bg-transparent border border-yellow-600 text-white py-3 rounded text-xs font-bold uppercase"
               >
                 <span className="relative z-10 flex items-center gap-2"><FaHeadset /> Hubungi</span>
               </button>
               <button 
+                type="button"
                 onClick={() => router.push('/register')} 
-                className="glossy-button flex-1 flex items-center justify-center gap-2 bg-transparent border border-yellow-600 text-white py-3 rounded text-xs font-bold uppercase relative"
+                className="animate-shine flex-1 flex items-center justify-center gap-2 bg-transparent border border-yellow-600 text-white py-3 rounded text-xs font-bold uppercase"
               >
                 <span className="relative z-10 flex items-center gap-2"><FaUserPlus /> Daftar</span>
               </button>
-<div className="flex-1">
+              <div className="flex-1">
                 <TombolLainnya />
               </div>
             </div>
-          </div>
+          </form>
         )}
+
       </div>
     </header>
   );
-}
+} 
