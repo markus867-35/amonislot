@@ -57,8 +57,8 @@ export default function DepositPage() {
         console.log('Data Bank Berhasil Dimuat:', bankRes); // Cek F12 Console untuk memastikan BNI, BRI, DANA muncul
         setBankList(bankRes || []);
       }
-    } catch (err) {
-      console.error('Error submitting deposit:', error.message);
+    } catch (err: any) {
+      console.error('Error submitting deposit:', err.message);
     }
   }
 
