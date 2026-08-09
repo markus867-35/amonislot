@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import Swal from 'sweetalert2';
 
-// Inisialisasi Supabase client (pastikan environment variable sudah terpasang di .env.local)
+// Inisialisasi Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
@@ -13,10 +13,10 @@ export default function DepositPage() {
   const [activeTab, setActiveTab] = useState<'qris' | 'transfer'>('qris');
   const [nominal, setNominal] = useState<number | ''>('');
   const [selectedBank, setSelectedBank] = useState('');
-  const [bankList, setBankList] = useState<any[]>([]); // Menyimpan data bank dari tabel admin_banks
+  const [bankList, setBankList] = useState<any[]>([]);
   const [promo, setPromo] = useState('');
   const [loading, setLoading] = useState(false);
-  
+  const [currentUsername, setCurrentUsername] = useState<string | null>(null);
 
   const [memberData, setMemberData] = useState({
     username: '',
@@ -25,47 +25,56 @@ export default function DepositPage() {
     bank: 'Memuat...',
   });
 
-  // Ambil data member dan data bank admin dari Supabase saat komponen dimuat
+  // Ambil username dari localStorage secara aman di client-side
+  useEffect(() => {
+    const user = localStorage.getItem('username');
+    if (user) {
+      setCurrentUsername(user);
+    }
+  }, []);
+
+  // Ambil data member dan data bank admin dari Supabase
   useEffect(() => {
     async function fetchData() {
       try {
-        // 1. Ambil data member
-        const { data: memberRes, error: memberErr } = await supabase
-          .from('members')
-          .select('nama_rekening, nomor_rekening, bank_name, username')
-          .limit(1)
-          .single(); 
+        // 1. Ambil data member jika currentUsername tersedia
+        if (currentUsername) {
+          const { data: memberRes, error: memberErr } = await supabase
+            .from('members')
+            .select('nama_rekening, nomor_rekening, bank_name, username')
+            .eq('username', currentUsername)
+            .single(); 
 
-        if (!memberErr && memberRes) {
-          setMemberData({
-            username: memberRes.username || '',
-            namaRekening: memberRes.nama_rekening || '-',
-            nomorRekening: memberRes.nomor_rekening || '-',
-            bank: memberRes.bank_name || '-',
-          });
+          if (!memberErr && memberRes) {
+            setMemberData({
+              username: memberRes.username || '',
+              namaRekening: memberRes.nama_rekening || '-',
+              nomorRekening: memberRes.nomor_rekening || '-',
+              bank: memberRes.bank_name || '-',
+            });
+          }
         }
 
-// 2. Ambil data bank tujuan dari tabel admin_banks (Tambahkan filter jika perlu)
-      const { data: bankRes, error: bankErr } = await supabase
-        .from('admin_banks')
-        .select('*')
-        .order('urutan', { ascending: true }); // Diurutkan berdasarkan kolom 'urutan' dari database Anda
+        // 2. Ambil data bank tujuan dari tabel admin_banks
+        const { data: bankRes, error: bankErr } = await supabase
+          .from('admin_banks')
+          .select('*')
+          .order('urutan', { ascending: true });
 
-      if (bankErr) {
-        console.error('Error mengambil bank:', bankErr.message);
-      } else {
-        console.log('Data Bank Berhasil Dimuat:', bankRes); // Cek F12 Console untuk memastikan BNI, BRI, DANA muncul
-        setBankList(bankRes || []);
+        if (bankErr) {
+          console.error('Error mengambil bank:', bankErr.message);
+        } else {
+          setBankList(bankRes || []);
+        }
+      } catch (err: any) {
+        console.error('Error fetching data:', err.message);
       }
-    } catch (err: any) {
-      console.error('Error submitting deposit:', err.message);
     }
-  }
 
     fetchData();
-  }, []);
+  }, [currentUsername]);
 
-  // Cari data detail bank admin yang sedang dipilih berdasarkan bank_name
+  // Cari data detail bank admin yang sedang dipilih
   const selectedBankData = bankList.find(
     (item) => item.bank_name === selectedBank
   );
@@ -82,11 +91,11 @@ export default function DepositPage() {
   const handleDepositSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nominal || Number(nominal) < 5000) {
-      alert('Minimal deposit adalah Rp. 5,000.00');
+      Swal.fire('Peringatan', 'Minimal deposit adalah Rp. 5,000.00', 'warning');
       return;
     }
     if (activeTab === 'transfer' && !selectedBank) {
-      alert('Silahkan pilih bank tujuan terlebih dahulu.');
+      Swal.fire('Peringatan', 'Silahkan pilih bank tujuan terlebih dahulu.', 'warning');
       return;
     }
 
@@ -112,51 +121,24 @@ export default function DepositPage() {
         throw error;
       }
 
-     Swal.fire({
-  icon: 'success',
-  title: 'Berhasil!',
-  text: `Permintaan deposit via ${activeTab.toUpperCase()} sebesar Rp. ${Number(nominal).toLocaleString('id-ID')} berhasil dikirim!`,
-  confirmButtonText: 'OK',
-  confirmButtonColor: '#facc15' // Sesuaikan warna tombol dengan tema kuning Anda
-});
-     
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: `Permintaan deposit via ${activeTab.toUpperCase()} sebesar Rp. ${Number(nominal).toLocaleString('id-ID')} berhasil dikirim!`,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#facc15'
+      });
+      
       setNominal('');
       setSelectedBank('');
       setPromo('');
-    } catch (error: any) {
-      console.error('Error submitting deposit:', error.message);
-      alert('Terjadi kesalahan saat mengirim permintaan deposit: ' + error.message);
+    } catch (err: any) {
+      console.error('Error submitting deposit:', err.message);
+      Swal.fire('Error', 'Terjadi kesalahan saat mengirim permintaan deposit: ' + err.message, 'error');
     } finally {
       setLoading(false);
     }
   };
-
-
-  const currentUsername = localStorage.getItem('username'); 
-
-useEffect(() => {
-  async function fetchLogedInMember() {
-    if (!currentUsername) return;
-
-    // Ambil data spesifik milik user yang sedang login
-    const { data: memberRes, error } = await supabase
-      .from('members')
-      .select('nama_rekening, nomor_rekening, bank_name, username')
-      .eq('username', currentUsername) // <-- Wajib di-filter berdasarkan user yang login
-      .single(); 
-
-    if (!error && memberRes) {
-      setMemberData({
-        username: memberRes.username,
-        namaRekening: memberRes.nama_rekening || '-',
-        nomorRekening: memberRes.nomor_rekening || '-',
-        bank: memberRes.bank_name || '-',
-      });
-    }
-  }
-
-  fetchLogedInMember();
-}, [currentUsername]);
 
   return (
     <div className="bg-[#0a020f] text-gray-900 pt-2 pb-24 px-4 flex justify-center items-start min-h-screen">
