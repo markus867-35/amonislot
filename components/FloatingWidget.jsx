@@ -33,6 +33,14 @@ const menuItems = [
     link: 'https://t.me/namagruptelegram', // <-- Masukkan URL Telegram di sini
     showMobile: false 
   },
+    { 
+    id: 1, 
+    text: 'PREDIKSI', 
+    icon: 'https://iili.io/3m6tiXf.gif', 
+    color: 'bg-red-600',
+    link: '/prediksi', // <-- Masukkan URL halaman RTP di sini (bisa link internal/eksternal)
+    showMobile: true 
+  },
 ];
 
 export default function FloatingMenu() {

@@ -72,24 +72,34 @@ export default function MobileLogin() {
           </div>
         </div>
 
-        {/* Tombol Login (Ubah jadi type="submit") */}
+        {/* Tombol Login */}
         <button 
           type="submit" 
-          className="animate-shine w-full bg-[#d4af37] hover:bg-yellow-500 text-black font-extrabold py-3 rounded uppercase tracking-wider text-sm shadow-md"
+          className="animate-shine w-full bg-[#d4af37] hover:bg-yellow-500 text-black font-extrabold py-3 rounded uppercase tracking-wider text-sm shadow-md cursor-pointer"
         >
           <span className="relative z-10">Login</span>
         </button>
       </form>
 
-      {/* Tombol Daftar berada di luar form utama agar tidak ikut ter-submit */}
+      {/* Tombol Daftar & Tautan Versi WAP */}
       <div className="flex flex-col gap-3 max-w-xl mx-auto mt-3">
         <button 
           type="button"
           onClick={() => router.push('/register')} 
-          className="animate-shine w-full bg-[#1c0b2b] hover:bg-[#28103d] text-white border border-purple-500 font-bold py-3 rounded uppercase tracking-wider text-sm shadow-md"
+          className="animate-shine w-full bg-[#1c0b2b] hover:bg-[#28103d] text-white border border-purple-500 font-bold py-3 rounded uppercase tracking-wider text-sm shadow-md cursor-pointer"
         >
           <span className="relative z-10">Daftar</span>
         </button>
+
+        {/* Link Versi WAP di bawah tombol Daftar */}
+        <div className="text-center pt-1">
+          <a 
+            href="/versiwap" // Sesuaikan dengan route halaman WAP Anda
+            className="text-xs text-gray-300 hover:text-white underline tracking-wide transition"
+          >
+            Versi WAP
+          </a>
+        </div>
       </div>
     </div>
   );

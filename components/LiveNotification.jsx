@@ -121,6 +121,40 @@ export default function LiveNotification() {
 
   return (
     <div className="fixed bottom-20 left-4 z-[9999] flex flex-col gap-3 pointer-events-auto">
+                  <style jsx>{`
+        @keyframes shineMove {
+          0% {
+            transform: translateX(-100%) translateY(-100%) rotate(25deg);
+          }
+          100% {
+            transform: translateX(100%) translateY(100%) rotate(25deg);
+          }
+        }
+
+        .animate-shine {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .animate-shine::after {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: linear-gradient(
+            135deg,
+            transparent 0%,
+            transparent 48%,
+            rgba(255, 255, 255, 0.25) 50%,
+            transparent 52%,
+            transparent 100%
+          );
+          pointer-events: none;
+          animation: shineMove 4s ease-in-out infinite;
+        }
+      `}</style>
       
       {/* 1. WIDGET PERTANDINGAN */}
       {showMatchWidget && (
@@ -141,7 +175,7 @@ export default function LiveNotification() {
             <div className={`transform transition-transform duration-300 ease-in-out ${slideAnimation}`}>
               
               {/* Header Liga */}
-              <div className="bg-[#0b0e2d] text-white text-center font-extrabold text-base py-2.5 border-b border-blue-900 tracking-wider">
+              <div className=" animate-shine bg-[#0b0e2d] text-white text-center font-extrabold text-base py-2.5 border-b border-blue-900 tracking-wider">
                 {currentMatch.league}
               </div>
 
@@ -164,7 +198,7 @@ export default function LiveNotification() {
                     <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-1.5 overflow-hidden border border-blue-400/30">
                       <span className="text-base">⚽</span>
                     </div>
-                    <span className="text-xs sm:text-sm font-bold truncate w-full">{currentMatch.homeTeam}</span>
+                    <span className=" text-xs sm:text-sm font-bold truncate w-full">{currentMatch.homeTeam}</span>
                   </div>
 
                   {/* Tanggal, Jam & Skor */}
@@ -195,13 +229,13 @@ export default function LiveNotification() {
 
               {/* Menu Tombol Bawah */}
               <div className="flex flex-col border-t border-blue-900/60 text-xs sm:text-sm font-extrabold">
-                <a href={currentMatch.selengkapnyaUrl} className="bg-yellow-300 hover:bg-yellow-400 text-black py-2 text-center border-b border-blue-900/40 transition">
+                <a href={currentMatch.selengkapnyaUrl} className="animate-shine  bg-yellow-300 hover:bg-yellow-400 text-black py-2 text-center border-b border-blue-900/40 transition">
                   Selengkapnya
                 </a>
-                <a href={currentMatch.nontonUrl} className="bg-yellow-300 hover:bg-yellow-400 text-black py-2 text-center border-b border-blue-900/40 transition">
+                <a href={currentMatch.nontonUrl} className=" animate-shine bg-yellow-300 hover:bg-yellow-400 text-black py-2 text-center border-b border-blue-900/40 transition">
                   Nonton Live
                 </a>
-                <a href={currentMatch.bettingUrl} className="bg-yellow-300 hover:bg-yellow-400 text-black py-2 text-center transition">
+                <a href={currentMatch.bettingUrl} className="animate-shine bg-yellow-300 hover:bg-yellow-400 text-black py-2 text-center transition">
                   Betting
                 </a>
               </div>

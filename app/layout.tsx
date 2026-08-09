@@ -26,7 +26,9 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const pathname = usePathname(); 
-  const isTermsPage = pathname === '/terms'; // Cek apakah sedang di halaman terms
+  
+  // Menambahkan '/versiwap' ke dalam pengecekan halaman khusus
+  const isSpecialPage = pathname === '/terms' || pathname === '/prediksi' || pathname === '/versiwap';
 
   useEffect(() => {
     const checkLogin = () => {
@@ -52,11 +54,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body className="min-h-full flex flex-col items-center bg-[#0f001a]"> 
         
         <div className={`w-full md:max-w-[1200px] bg-transparent md:bg-transparent md:shadow-2xl relative transition-all ${
-          !isLoggedIn ? 'pb-5' : 'pb-24 md:pb-0'
+          !isLoggedIn || isSpecialPage ? 'pb-5' : 'pb-24 md:pb-0'
         }`}>
           
-          {/* Header & Marquee disembunyikan total jika sedang di halaman /terms */}
-          {!isTermsPage && (
+          {/* Header & Marquee disembunyikan total jika sedang di halaman khusus */}
+          {!isSpecialPage && (
             <>
               <Header />
               <ConditionalMarquee />
@@ -66,8 +68,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
           {/* Konten Halaman Aktif */}
           <main className="bg-transparent">{children}</main>
 
-          {/* Notifikasi, Floating Widget, dan Navigasi Bawah disembunyikan jika di /terms */}
-          {!isTermsPage && (
+          {/* Notifikasi, Floating Widget, dan Navigasi Bawah disembunyikan total jika di halaman khusus */}
+          {!isSpecialPage && (
             <>
               <LiveNotification />
               <FloatingWidget />

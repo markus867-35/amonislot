@@ -90,7 +90,7 @@ export default function PromosiPage() {
         confirmButtonText: 'Login Sekarang',
       }).then((result) => {
         if (result.isConfirmed) {
-          router.push('/login');
+          router.push('/');
         }
       });
     } else {
@@ -108,6 +108,40 @@ export default function PromosiPage() {
     <main className={`bg-transparent md:bg-[#1a0525] w-full p-0 md:p-6 transition-all min-h-screen ${
       !isLoggedIn ? 'pb-40' : 'pb-24 md:pb-20'
     }`}>
+            <style jsx>{`
+        @keyframes shineMove {
+          0% {
+            transform: translateX(-100%) translateY(-100%) rotate(25deg);
+          }
+          100% {
+            transform: translateX(100%) translateY(100%) rotate(25deg);
+          }
+        }
+
+        .animate-shine {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .animate-shine::after {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: linear-gradient(
+            135deg,
+            transparent 0%,
+            transparent 48%,
+            rgba(255, 255, 255, 0.25) 50%,
+            transparent 52%,
+            transparent 100%
+          );
+          pointer-events: none;
+          animation: shineMove 4s ease-in-out infinite;
+        }
+      `}</style>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto">
         {promosi.length === 0 ? (
           <p className="text-white text-center col-span-2 py-10">Belum ada promo yang tersedia.</p>
@@ -126,12 +160,12 @@ export default function PromosiPage() {
 
               <div className="flex justify-between items-center pt-2 border-t border-purple-900/50">
                 <div className="flex gap-2 items-center">
-                    <span className="bg-yellow-600 text-black text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-0.5 rounded">PROMO AKTIF</span>
+                    <span className="animate-shine bg-yellow-600 text-black text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-0.5 rounded">PROMO AKTIF</span>
                     <span className="text-gray-400 text-[10px] md:text-xs">ABONGSLOT OFFICIAL</span>
                 </div>
                 <button 
                   onClick={() => setSelectedPromo(item)}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-4 md:px-5 py-2 rounded text-xs md:text-sm transition cursor-pointer shadow"
+                  className="animate-shine bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-4 md:px-5 py-2 rounded text-xs md:text-sm transition cursor-pointer shadow"
                 >
                   Info Lebih Lanjut
                 </button>

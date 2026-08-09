@@ -124,7 +124,7 @@ body {
     rgba(255, 255, 255, 0.7),
     transparent
   ) !important;
-  animation: shine 3s infinite linear !important;
+  animation: shine 5s infinite linear !important;
   pointer-events: none !important;
   z-index: 50 !important; /* Paksa posisi kilau berada di paling atas */
 }
@@ -185,4 +185,5 @@ body {
     transform: translateX(200%);
   }
 }
+
 

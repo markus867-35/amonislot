@@ -176,12 +176,12 @@ export default function RegisterPage() {
           }
         }
 
-        .glossy-button {
+        .animate-shine {
           position: relative;
           overflow: hidden;
         }
 
-        .glossy-button::after {
+        .animate-shine::after {
           content: '';
           position: absolute;
           top: -50%;
@@ -238,7 +238,7 @@ export default function RegisterPage() {
         <button 
           type="button" 
           onClick={handleQuickLogin}
-          className="glossy-button w-full bg-[#facc15] hover:bg-yellow-500 text-black font-extrabold py-2.5 rounded uppercase tracking-wider text-sm shadow-sm relative"
+          className="animate-shine w-full bg-[#facc15] hover:bg-yellow-500 text-black font-extrabold py-2.5 rounded uppercase tracking-wider text-sm shadow-sm relative"
         >
           <span className="relative z-10">LOGIN</span>
         </button>
@@ -430,7 +430,7 @@ export default function RegisterPage() {
             </div>
           </div>
           
-          <button type="submit" className="glossy-button bg-yellow-500 hover:bg-yellow-600 text-white font-bold p-3 rounded mt-4 uppercase tracking-wider relative">
+          <button type="submit" className="animate-shine bg-yellow-500 hover:bg-yellow-600 text-white font-bold p-3 rounded mt-4 uppercase tracking-wider relative">
             <span className="relative z-10">Register</span>
           </button>
         </form>

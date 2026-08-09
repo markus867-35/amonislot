@@ -81,14 +81,14 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-[#0a020f] py-4 border-b border-purple-900 sticky top-0 z-45">
+    <header className="bg-[#0a020f] py-5 border-b border-purple-900 sticky top-0 z-45">
       <div className="max-w-[1200px] mx-auto px-4 flex justify-between items-center relative">
         
         {/* 1. PENYEIMBANG KIRI: Hanya muncul di desktop saat sudah login agar logo persis di tengah */}
         {isLoggedIn && <div className="hidden md:block flex-1" />}
 
         {/* Logo */}
-        <div className={`w-full md:w-auto flex justify-center text-2xl font-bold ${isLoggedIn ? 'md:flex-1 md:justify-center' : ''}`}>
+        <div className={` animate-shine w-full md:w-auto flex justify-center text-2xl font-bold ${isLoggedIn ? 'md:flex-1 md:justify-center' : ''}`}>
            <img 
              src="https://ik.imagekit.io/j72i7hsy1/download.png" 
              alt="Logo" 
@@ -110,7 +110,7 @@ export default function Header() {
             }} 
             className="hidden md:flex flex-col gap-1 flex-1 max-w-xl ml-auto"
           >
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <div className="relative flex-1">
                 <FaUser className="absolute left-3 top-3 text-gray-400" />
                 <input 

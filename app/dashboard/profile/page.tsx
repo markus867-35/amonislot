@@ -1,13 +1,15 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '../../lib/supabase';
 import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [username, setUsername] = useState('aurel123');
   const [rekInfo, setRekInfo] = useState('********3894 | DANA');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [balance, setBalance] = useState('0.00');
+  const [balance, setBalance] = useState<number>(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -21,13 +23,64 @@ export default function ProfilePage() {
     }
   }, []);
 
-  const handleRefreshBalance = () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
-      // Simulasi update saldo
-      setBalance('1.500.000');
+const fetchBalance = useCallback(async () => {
+    if (!username || username === 'USER_400') {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('members') // Diubah dari 'users' ke 'members'
+        .select('saldo') // Diubah dari 'balance' ke 'saldo'
+        .eq('username', username)
+        .single();
+
+      if (error) throw error;
+      if (data) {
+        setBalance(data.saldo);
+      }
+    } catch (error) {
+      console.error('Gagal mengambil saldo:', error);
+    } finally {
+      setLoading(false);
       setIsRefreshing(false);
-    }, 1000);
+    }
+  }, [username]);
+
+  useEffect(() => {
+    fetchBalance();
+  }, [fetchBalance]);
+
+  // Handler saat tombol refresh diklik
+  const handleRefreshBalance = async () => {
+    setIsRefreshing(true);
+    try {
+      if (!username || username === 'USER_400') {
+        setIsRefreshing(false);
+        return;
+      }
+
+      // Ambil data terbaru dari tabel 'members' kolom 'saldo'
+      const { data, error } = await supabase
+        .from('members') // Diubah dari 'users' ke 'members'
+        .select('saldo') // Diubah dari 'balance' ke 'saldo'
+        .eq('username', username)
+        .single();
+
+      if (error) throw error;
+      
+      if (data) {
+        setBalance(data.saldo);
+      }
+    } catch (error) {
+      console.error('Gagal memperbarui saldo:', error);
+    } finally {
+      // Memberi sedikit jeda agar animasi putar terlihat mulus (1 detik)
+      setTimeout(() => {
+        setIsRefreshing(false);
+      }, 1000);
+    }
   };
 
   const handleCopyLink = () => {
@@ -96,31 +149,34 @@ const handleLogout = () => {
         {/* 2. TOMBOL AKSI CEPAT (DOMPET, DEPOSIT, WITHDRAW, LOGOUT) */}
         <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
           
-          {/* Dompet */}
-          <div className="bg-gradient-to-b from-blue-700 to-blue-900 border border-blue-500/50 rounded-xl p-3 flex flex-col justify-between shadow-lg relative overflow-hidden">
-            <div className="flex justify-between items-center text-xs text-blue-200">
-              <span>Dompet</span>
-              <button 
-                onClick={handleRefreshBalance} 
-                className={`transition-transform ${isRefreshing ? 'animate-spin' : 'hover:scale-110'}`}
-                title="Refresh Saldo"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-refresh-cw block hover:text-playerTextAct">
-                  <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
-                  <path d="M21 3v5h-5"></path>
-                  <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
-                  <path d="M8 16H3v5"></path>
-                </svg>
-              </button>
-            </div>
-            <div className="text-lg md:text-xl font-black text-white mt-2 tracking-wide">
-              {balance}
-            </div>
-          </div>
+<div className="bg-gradient-to-b from-blue-700 to-blue-900 border border-blue-500/50 rounded-xl p-3 flex flex-col justify-between shadow-lg relative overflow-hidden">
+      <div className="flex justify-between items-center text-xs text-blue-200">
+        <span>Dompet</span>
+        <button 
+          onClick={handleRefreshBalance} 
+          className={`transition-transform ${isRefreshing ? 'animate-spin' : 'hover:scale-110'}`}
+          title="Refresh Saldo"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-refresh-cw block hover:text-playerTextAct">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+            <path d="M21 3v5h-5"></path>
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+            <path d="M8 16H3v5"></path>
+          </svg>
+        </button>
+      </div>
+      <div className="text-lg md:text-xl font-black text-white mt-2 tracking-wide">
+        {loading ? (
+          <span className="text-sm font-normal text-blue-200">Memuat...</span>
+        ) : (
+          `Rp. ${balance.toLocaleString('id-ID')}`
+        )}
+      </div>
+    </div>
 
           {/* Deposit */}
           <button 
-            onClick={() => router.push('/deposit')} 
+            onClick={() => router.push('/dashboard/deposit')} 
             className="bg-gradient-to-b from-yellow-200 to-yellow-400 hover:from-yellow-300 hover:to-yellow-500 text-black font-extrabold rounded-xl p-2.5 md:p-3 flex flex-col md:flex-col items-center justify-center gap-0.5 md:gap-1 shadow-lg transition-transform active:scale-95 border border-yellow-100 h-20 md:h-24"
           >
             {/* Ikon SVG Deposit */}
