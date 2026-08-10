@@ -20,19 +20,16 @@ export async function GET(request: Request) {
       );
     }
 
-    // Menggunakan headers lengkap agar lolos dari blokir bot situs target
-    const response = await fetch('https://on.kamuskeluaran.live', {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9,id;q=0.8',
-        'Cache-Control': 'no-store',
-      },
+    // Menggunakan jembatan proxy publik agar Vercel tidak diblokir oleh situs target
+    const targetUrl = 'https://on.kamuskeluaran.live';
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+
+    const response = await fetch(proxyUrl, {
       cache: 'no-store',
     });
 
     if (!response.ok) {
-      throw new Error(`Gagal terhubung ke situs target (Status: ${response.status})`);
+      throw new Error(`Gagal terhubung melalui proxy (Status: ${response.status})`);
     }
 
     const html = await response.text();
@@ -54,10 +51,10 @@ export async function GET(request: Request) {
     });
 
     if (scrapedData.length === 0) {
-      throw new Error('Elemen HTML tidak ditemukan, struktur situs mungkin berubah');
+      throw new Error('Data gagal dibaca, struktur elemen HTML tidak ditemukan');
     }
 
-    // Simpan ke Supabase
+    // Simpan otomatis ke Supabase
     for (const item of scrapedData) {
       await supabase
         .from('markets')
@@ -70,7 +67,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Robot berhasil melakukan scraping dan memperbarui database!',
+      message: 'Robot berhasil scraping lewat proxy dan memperbarui database!',
       data: scrapedData,
     });
 
