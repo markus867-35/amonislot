@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import * as cheerio from 'cheerio';
 
-// Inisialisasi Supabase
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
@@ -10,7 +9,6 @@ const supabase = createClient(
 
 export async function GET(request: Request) {
   try {
-    // 1. Ambil parameter URL untuk validasi key (?key=AMONI123)
     const url = new URL(request.url);
     const key = url.searchParams.get('key');
 
@@ -22,28 +20,28 @@ export async function GET(request: Request) {
       );
     }
 
-    // 2. Ambil halaman HTML dari situs target
+    // Menggunakan headers lengkap agar lolos dari blokir bot situs target
     const response = await fetch('https://on.kamuskeluaran.live', {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9,id;q=0.8',
+        'Cache-Control': 'no-store',
       },
       cache: 'no-store',
     });
 
     if (!response.ok) {
-      throw new Error('Gagal terhubung ke situs target');
+      throw new Error(`Gagal terhubung ke situs target (Status: ${response.status})`);
     }
 
     const html = await response.text();
     const $ = cheerio.load(html);
     const scrapedData: any[] = [];
 
-    // 3. Scraping berdasarkan struktur HTML asli dari target
     $('.col').each((i, el) => {
       const name = $(el).find('.card-title').text().trim();
       const liveDrawUrl = $(el).find('a').attr('href') || '';
-      
-      // Ambil teks dari footer (berisi tanggal dan angka result)
       const footerText = $(el).find('.card-footer p').text().trim();
 
       if (name) {
@@ -55,7 +53,11 @@ export async function GET(request: Request) {
       }
     });
 
-    // 4. Simpan atau perbarui data otomatis ke Supabase (tabel 'markets')
+    if (scrapedData.length === 0) {
+      throw new Error('Elemen HTML tidak ditemukan, struktur situs mungkin berubah');
+    }
+
+    // Simpan ke Supabase
     for (const item of scrapedData) {
       await supabase
         .from('markets')
