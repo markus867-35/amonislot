@@ -20,19 +20,30 @@ export async function GET(request: Request) {
       );
     }
 
-    // Menggunakan jembatan proxy publik agar Vercel tidak diblokir oleh situs target
-    const targetUrl = 'https://on.kamuskeluaran.live';
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
-
-    const response = await fetch(proxyUrl, {
+    // Menggunakan fetch langsung dengan header lengkap browser desktop agar tidak mudah dicurigai bot
+    const response = await fetch('https://on.kamuskeluaran.live', {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+      },
       cache: 'no-store',
     });
 
     if (!response.ok) {
-      throw new Error(`Gagal terhubung melalui proxy (Status: ${response.status})`);
+      throw new Error(`Situs menolak koneksi (HTTP Status: ${response.status})`);
     }
 
     const html = await response.text();
+    
+    // Cek apakah terhalang halaman proteksi Cloudflare
+    if (html.includes('cf-browser-verification') || html.includes('Turnstile')) {
+      throw new Error('Gagal: Situs target dilindungi oleh Cloudflare Turnstile');
+    }
+
     const $ = cheerio.load(html);
     const scrapedData: any[] = [];
 
@@ -51,10 +62,10 @@ export async function GET(request: Request) {
     });
 
     if (scrapedData.length === 0) {
-      throw new Error('Data gagal dibaca, struktur elemen HTML tidak ditemukan');
+      throw new Error('Data tidak ditemukan, struktur HTML mungkin berubah atau terblokir');
     }
 
-    // Simpan otomatis ke Supabase
+    // Simpan ke Supabase
     for (const item of scrapedData) {
       await supabase
         .from('markets')
@@ -67,7 +78,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Robot berhasil scraping lewat proxy dan memperbarui database!',
+      message: 'Robot sukses memperbarui database!',
       data: scrapedData,
     });
 
