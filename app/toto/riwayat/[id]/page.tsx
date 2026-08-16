@@ -29,54 +29,54 @@ export default function RiwayatTotoPage() {
     }
   }, [id]);
 
- const fetchMarketAndHistory = async () => {
+const fetchMarketAndHistory = async () => {
     try {
       setLoading(true);
 
-      // 1. Ambil seluruh data dari tabel togel_results
-      const { data: allResults, error } = await supabase
-        .from('togel_results')
-        .select('*')
-        .order('id', { ascending: false });
+      const isNumericId = /^\d+$/.test(String(id));
+      let targetMarketName = '';
+
+      // Jika URL mengirim teks (slug seperti 'turki' atau 'singapore-pools'), ubah jadi spasi
+      if (!isNumericId) {
+        targetMarketName = String(id).replace(/-/g, ' ');
+      }
+
+      // 1. Ambil data dari tabel 'togel_results'
+      let query = supabase.from('togel_results').select('*');
+
+      if (isNumericId) {
+        // Jika masih berupa angka ID, kita ambil seluruh data untuk dicocokkan atau diurutkan
+        // Karena tidak ada kolom ID pasaran, kita ambil data berdasarkan baris terbaru atau urutan
+        // Lebih disarankan nanti link di-orisinilkan mengirim nama pasaran.
+        query = query.order('id', { ascending: false });
+      } else {
+        query = query.ilike('pasaran', `%${targetMarketName}%`).order('id', { ascending: false });
+      }
+
+      const { data: results, error } = await query;
 
       if (error) throw error;
 
-      const isNumericId = /^\d+$/.test(String(id));
-      let targetMarketName = '';
-      let filteredResults = [];
+      let finalResults = results || [];
 
-      // 2. Tentukan nama pasaran berdasarkan ID atau URL slug
-      if (isNumericId) {
-        // Karena kita tidak tahu ID pasaran (karena market_id tidak ada),
-        // kita ambil data berdasarkan "pasaran" yang unik.
-        // Jika ID 1 adalah Delaware, maka kita cari semua yang pasarannya mengandung Delaware.
-        // *CATATAN: Jika Anda tahu ID 1 = Delaware, Anda bisa gunakan mapping di sini.
-        
-        // Contoh: Ambil semua data, nanti kita filter berdasarkan nama yang muncul di tabel
-        filteredResults = allResults || [];
-      } else {
-        targetMarketName = String(id).replace(/-/g, ' ');
-        filteredResults = (allResults || []).filter((item) => 
-          String(item.pasaran || '').toLowerCase().includes(targetMarketName.toLowerCase())
-        );
-      }
-
-      // 3. Jika isNumericId, kita butuh cara untuk tahu pasaran apa yang dimaksud.
-      // Kita ambil data unik dari kolom 'pasaran' dan pilih berdasarkan ID (index)
-      if (isNumericId) {
-        const uniquePasaran = [...new Set(allResults.map(item => item.pasaran))];
-        const selectedPasaran = uniquePasaran[Number(id) - 1]; // Misal ID 1 adalah index ke-0
+      // Jika berupa angka ID dan data tumpul, ambil data berdasarkan indeks unik pasaran yang ada di database
+      if (isNumericId && finalResults.length > 0) {
+        const uniquePasaran = [...new Set(finalResults.map(item => item.pasaran))];
+        const selectedPasaran = uniquePasaran[Number(id) - 1] || uniquePasaran[0];
         
         if (selectedPasaran) {
           targetMarketName = selectedPasaran;
-          filteredResults = allResults.filter(item => item.pasaran === selectedPasaran);
-        } else {
-          filteredResults = allResults; // Fallback jika tidak ditemukan
+          finalResults = finalResults.filter(item => item.pasaran === selectedPasaran);
         }
       }
 
-      setHistoryData(filteredResults);
-      setFilteredData(filteredResults);
+      setHistoryData(finalResults);
+      setFilteredData(finalResults);
+
+      // 2. Pastikan Header Judul mengambil nama pasaran asli dari data yang tampil
+      if (finalResults.length > 0 && finalResults[0].pasaran) {
+        targetMarketName = finalResults[0].pasaran;
+      }
 
       setMarketName(`RIWAYAT ANGKA ${targetMarketName.toUpperCase() || 'TOGEL'}`);
 
@@ -87,6 +87,7 @@ export default function RiwayatTotoPage() {
     }
   };
 
+  
   // Fungsi Filter (Cari)
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,7 +119,7 @@ export default function RiwayatTotoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a020f] text-gray-900 p-4 sm:p-6">
+    <div className="min-h-screen bg-[#0a020f] text-gray-900 p-5 sm:p-1.5">
       <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden">
         
         {/* Header Banner */}
