@@ -196,13 +196,12 @@ const fetchResults = async () => {
                     {displayResult}
                   </div>
 
-                  {/* Tombol Riwayat */}
-                  <a
-                    href={`/toto/riwayat/${toto.id}`}
-                    className="w-full bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 text-white font-bold py-1 rounded-xl text-xs sm:text-sm tracking-wider mb-2 transition-all shadow-md flex items-center justify-center animate-shine"
-                  >
-                    RIWAYAT
-                  </a>
+<a
+  href={`/toto/riwayat/${toto.id}`}
+  className="w-full bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 text-white font-bold py-1 rounded-xl text-xs sm:text-sm tracking-wider mb-2 transition-all shadow-md flex items-center justify-center"
+>
+  RIWAYAT
+</a>
 
                   {/* Tombol Main */}
                   <a

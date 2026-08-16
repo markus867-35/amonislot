@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import TombolLainnya from '@/components/TombolLainnya';
-import { supabase } from '../app/lib/supabase';
+import { supabase } from '@/app/lib/supabase';
 import { FaUser, FaKey, FaGift, FaHeadset, FaUserPlus, FaEllipsisH, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function Header() {
@@ -88,7 +88,7 @@ export default function Header() {
         {isLoggedIn && <div className="hidden md:block flex-1" />}
 
         {/* Logo */}
-        <div className={` animate-shine w-full md:w-auto flex justify-center text-2xl font-bold ${isLoggedIn ? 'md:flex-1 md:justify-center' : ''}`}>
+        <div className={`  md:w-auto flex justify-center text-2xl font-bold ${isLoggedIn ? 'md:flex-1 md:justify-center' : ''}`}>
            <img 
              src="https://ik.imagekit.io/j72i7hsy1/download.png" 
              alt="Logo" 

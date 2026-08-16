@@ -175,7 +175,7 @@ export default function LiveNotification() {
             <div className={`transform transition-transform duration-300 ease-in-out ${slideAnimation}`}>
               
               {/* Header Liga */}
-              <div className=" animate-shine bg-[#0b0e2d] text-white text-center font-extrabold text-base py-2.5 border-b border-blue-900 tracking-wider">
+              <div className="  bg-[#0b0e2d] text-white text-center font-extrabold text-base py-2.5 border-b border-blue-900 tracking-wider">
                 {currentMatch.league}
               </div>
 
@@ -229,13 +229,13 @@ export default function LiveNotification() {
 
               {/* Menu Tombol Bawah */}
               <div className="flex flex-col border-t border-blue-900/60 text-xs sm:text-sm font-extrabold">
-                <a href={currentMatch.selengkapnyaUrl} className="animate-shine  bg-yellow-300 hover:bg-yellow-400 text-black py-2 text-center border-b border-blue-900/40 transition">
+                <a href={currentMatch.selengkapnyaUrl} className="  bg-yellow-300 hover:bg-yellow-400 text-black py-2 text-center border-b border-blue-900/40 transition">
                   Selengkapnya
                 </a>
-                <a href={currentMatch.nontonUrl} className=" animate-shine bg-yellow-300 hover:bg-yellow-400 text-black py-2 text-center border-b border-blue-900/40 transition">
+                <a href={currentMatch.nontonUrl} className="  bg-yellow-300 hover:bg-yellow-400 text-black py-2 text-center border-b border-blue-900/40 transition">
                   Nonton Live
                 </a>
-                <a href={currentMatch.bettingUrl} className="animate-shine bg-yellow-300 hover:bg-yellow-400 text-black py-2 text-center transition">
+                <a href={currentMatch.bettingUrl} className=" bg-yellow-300 hover:bg-yellow-400 text-black py-2 text-center transition">
                   Betting
                 </a>
               </div>
